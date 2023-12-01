@@ -15,7 +15,10 @@ sw = stopwords.words('english')
 stemmer = SnowballStemmer("english")
 
 # Load data from Excel
-df = pd.read_excel('categorie_paghe.xlsx', sheet_name=0)
+try:
+    df = pd.read_csv('demo.csv', error_bad_lines=False)  # Ignore lines with parsing errors
+except pd.errors.ParserError as e:
+    print(f"Error reading CSV file: {e}")
 
 # Extract contents from the first column
 mylist = df['Contenuti'].tolist()
@@ -41,21 +44,10 @@ df["cluster_kmeans"] = cluster_kmeans
 df["cluster_agg"] = cluster_agg
 df["cluster_affinity"] = cluster_affinity
 
-# Write results to Excel
-workbook = xlsxwriter.Workbook('output.xlsx')
-worksheet = workbook.add_worksheet()
 
 # Writing the headers
-worksheet.write(0, 0, 'K-Means Cluster')
-worksheet.write(0, 1, 'Agglomerative Cluster')
-worksheet.write(0, 2, 'Affinity Propagation Cluster')
-worksheet.write(0, 3, 'Text')
-
-# Writing the clusters and text on each row
-for i in range(len(df)):
-    worksheet.write(i + 1, 0, df["cluster_kmeans"][i])
-    worksheet.write(i + 1, 1, df["cluster_agg"][i])
-    worksheet.write(i + 1, 2, df["cluster_affinity"][i])
-    worksheet.write(i + 1, 3, df["Contenuti"][i])
-
-workbook.close()
+df["cluster_kmeans"] = cluster_kmeans
+df["cluster_agg"] = cluster_agg
+df["cluster_affinity"] = cluster_affinity
+# Write result to csv
+df.to_csv('output.csv', index=False)
