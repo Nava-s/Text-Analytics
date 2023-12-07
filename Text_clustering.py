@@ -85,16 +85,12 @@ cluster_agg = agglomerative.fit_predict(tfidf_matrix.toarray())
 affinity_propagation = AffinityPropagation()
 cluster_affinity = affinity_propagation.fit_predict(tfidf_matrix.toarray())
 
-# Cosine similarity matrix
-cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
-
 #__________________________________________________________________________________________________
 
 # Add clustering results to the DataFrame
 df["cluster_kmeans"] = cluster_kmeans
 df["cluster_agg"] = cluster_agg
 df["cluster_affinity"] = cluster_affinity
-df["cosine_similarity"] = list(cosine_sim)
 
 # Write result to csv
 df.to_csv('output.csv', index=False)
@@ -102,20 +98,16 @@ df.to_csv('output.csv', index=False)
 #__________________________________________________________________________________________________
 
 #Print the 10 most frequent values for each cluster
-for column in ["cluster_kmeans", "cluster_agg", "cluster_affinity", "cosine_similarity"]:
+for column in ["cluster_kmeans", "cluster_agg", "cluster_affinity"]:
     print(f"\nMost frequent values in {column}:")
-    if column == "cosine_similarity":
-        # For cosine similarity, print the values directly
-        print(df[column])
-    else:
-        # For clustering columns, print the most frequent values within each cluster
-        for cluster_id in df[column].unique():
-            cluster_data = df[df[column] == cluster_id]['Contenuti']
-            all_text = ' '.join(cluster_data)
-            
-            # Filter out stopwords
-            words = [word for word in all_text.split() if word.lower() not in sw]
-            
-            # Count word occurrences
-            common_words = pd.Series(words).value_counts()[:10]
-            print(f"Cluster {cluster_id}:\n{common_words}\n")
+    # For clustering columns, print the most frequent values within each cluster
+    for cluster_id in df[column].unique():
+        cluster_data = df[df[column] == cluster_id]['Contenuti']
+        all_text = ' '.join(cluster_data)
+        
+        # Filter out stopwords
+        words = [word for word in all_text.split() if word.lower() not in sw]
+        
+        # Count word occurrences
+        common_words = pd.Series(words).value_counts()[:10]
+        print(f"Cluster {cluster_id}:\n{common_words}\n")
