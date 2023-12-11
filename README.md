@@ -25,6 +25,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-Special thanks to the scikit-learn and NLTK communities for their valuable tools and resources. If applicable, provide credit to the source of your data.
+Special thanks to the scikit-learn and NLTK communities for their valuable tools and resources.
 
 Happy clustering!
